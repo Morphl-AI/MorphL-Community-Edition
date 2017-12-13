@@ -1,6 +1,6 @@
 # Under Construction
 
-This is project is currently under construction. You can read more about it here: https://medium.com/morphl
+This is project is currently under construction. You can read more about it here: https://medium.com/morphl. Follow us on Twitter: https://twitter.com/morphlio
 
 ## License
 
