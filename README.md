@@ -38,6 +38,8 @@ On-premises, Cloud, or Hybrid. We offer several deployment options, giving you t
 
 If you run a business and are planning on using MorphL in a revenue-generating product, it makes business sense to sponsor MorphL development: it ensures the project that your product relies on stays healthy and actively maintained. It can also help your exposure in the open-source community and makes it easier to attract developers.
 
+For enterprise sales or partnerships please contact us [here](https://morphl.io/contact.html) or at contact [at] morphl.io.
+
 ____
 This is project is currently under development. You can read more about it here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio
 
