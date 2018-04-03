@@ -19,13 +19,13 @@ MorphL uses machine learning to optimize user interactions by analyzing product 
 
 # How it works
 
-- [x] <strong>Morphl Integrations</strong>
+- [x] <strong>Morphl Integrations</strong><br/>
 We integrate with Google Analytics, Facebook Ads, Mixpanel, Kissmetrics and other platforms to identify user behaviors. <br/><br/>
 
-- [x] <strong>Morphl Predictive Models</strong>
+- [x] <strong>Morphl Predictive Models</strong><br/>
 We're utilizing open-source machine learning algorithms to build predictive models which are then used to develop predictive applications.<br/><br/>
 
-- [x] <strong>Morphl Personalized Experience</strong>
+- [x] <strong>Morphl Personalized Experience</strong><br/>
 Developers can integrate micro-metrics directly in the user-facing product components and use the MorphL insights to build personalized user experiences.
 
 ___
