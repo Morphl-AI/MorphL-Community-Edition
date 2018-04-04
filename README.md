@@ -18,15 +18,15 @@ MorphL uses machine learning to optimize user interactions by <strong>analyzing 
 
 <table>
     <tr>
-        <td><img src="https://morphl.io/images/icons/icon-integrations.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Integrations</strong><br/>
+        <td><img src="http://morphl.io/images/icons/icon-integrations.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Integrations</strong><br/>
 We integrate with Google Analytics, Facebook Ads, Mixpanel, Kissmetrics and other platforms to identify user behaviors.</td>
     </tr>
     <tr>
-        <td><img src="https://morphl.io/images/icons/icon-predictive-models.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Predictive Models</strong><br/>
+        <td><img src="http://morphl.io/images/icons/icon-predictive-models.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Predictive Models</strong><br/>
 We're utilizing open-source machine learning algorithms to build predictive models which are then used to develop predictive applications.</td>
     </tr>
     <tr>
-        <td><img src="https://morphl.io/images/icons/icon-personalized-experience.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Personalized Experience</strong><br/>
+        <td><img src="http://morphl.io/images/icons/icon-personalized-experience.svg" style="width:120px; height: auto;" /></td><td><strong>Morphl Personalized Experience</strong><br/>
 Developers can integrate micro-metrics directly in the user-facing product components and use the MorphL insights to build personalized user experiences.</td>
     </tr>
 </table>    
