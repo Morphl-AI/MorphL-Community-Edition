@@ -41,9 +41,9 @@ For enterprise sales or partnerships please contact us [here](https://morphl.io/
 
 The MorphL Platform consists of two main components:
 
-- **[MorphL Platform Orchestrator](orchestrator/README.md)** - This is the backbone of the platform. It sets up the infrastructure required for running pipelines for each model.
+- **[MorphL Platform Orchestrator](orchestrator/)** - This is the backbone of the platform. It sets up the infrastructure required for running pipelines for each model.
 
-- **[MorphL Pipelines](pipelines/README.md)** - Consists of various Python scripts, required for retrieving data from various sources, pre-processing, training a model and generating predictions.
+- **[MorphL Pipelines](pipelines/)** - Consists of various Python scripts, required for retrieving data from various sources, pre-processing, training a model and generating predictions.
 
 ---
 
