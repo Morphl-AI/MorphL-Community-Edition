@@ -1,0 +1,155 @@
+import datetime
+from airflow.models import DAG
+from airflow.operators.bash_operator import BashOperator
+
+args = { 'owner': 'airflow',
+         'start_date': START_DATE_AS_PY_CODE,
+         'retries': 16,
+         'retry_delay': datetime.timedelta(minutes=30) }
+
+dag = DAG(dag_id='ga_chp_prediction_pipeline',
+          default_args=args)
+
+try:
+    with open('/tmp/ga_chp_prediction_pipeline_day_as_str.txt', 'r') as f:
+        day_as_str = f.read().strip()
+except:
+    day_as_str = ''
+
+try:
+    with open('/tmp/ga_chp_prediction_pipeline_unique_hash.txt', 'r') as f:
+        unique_hash = f.read().strip()
+except:
+    unique_hash = ''
+
+# Do not remove the extra space at the end (the one after 'ga_chp_truncate_tables_before_prediction_pipeline.sh')
+task_2_truncate_tables_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'bash /opt/ga_chp/prediction/pipeline_setup/ga_chp_truncate_tables_before_prediction_pipeline.sh ']
+task_2_truncate_tables_cmd = ' '.join(task_2_truncate_tables_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'runbasicpreprocessor.sh')
+task_3_run_basic_preprocessor_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'TRAINING_OR_PREDICTION=prediction',
+    'MODELS_DIR=/opt/models',
+    'docker run --rm --net host',
+    '-v /opt/ga_chp:/opt/ga_chp:ro',
+    '-v /opt/models:/opt/models:ro',
+    '-e ENVIRONMENT_TYPE',
+    '-e DAY_AS_STR',
+    '-e UNIQUE_HASH',
+    '-e TRAINING_OR_PREDICTION',
+    '-e MODELS_DIR',
+    '-e MORPHL_SERVER_IP_ADDRESS',
+    '-e MORPHL_CASSANDRA_USERNAME',
+    '-e MORPHL_CASSANDRA_KEYSPACE',
+    '-e MORPHL_CASSANDRA_PASSWORD',
+    'pysparkcontainer',
+    'bash /opt/ga_chp/pre_processing/basic_processing/runbasicpreprocessor.sh ']
+task_3_run_basic_preprocessor_cmd = ' '.join(task_3_run_basic_preprocessor_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'ga_chp_preproc_prediction')
+task_4_move_preproc_metadata_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'bash /opt/ga_chp/pre_processing/ga_chp_move_metadata.sh ga_chp_preproc_prediction ']
+task_4_move_preproc_metadata_cmd = ' '.join(task_4_move_preproc_metadata_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'runadvancedpreprocessor.sh')
+task_5_run_advanced_preprocessor_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'TRAINING_OR_PREDICTION=prediction',
+    'MODELS_DIR=/opt/models',
+    'docker run --rm --net host',
+    '-v /opt/ga_chp:/opt/ga_chp:ro',
+    '-v /opt/models:/opt/models:ro',
+    '-v /opt/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop:ro',
+    '-e ENVIRONMENT_TYPE',
+    '-e DAY_AS_STR',
+    '-e UNIQUE_HASH',
+    '-e TRAINING_OR_PREDICTION',
+    '-e MODELS_DIR',
+    '-e MORPHL_SERVER_IP_ADDRESS',
+    '-e LIBHDFS3_CONF',
+    'pythoncontainer',
+    'bash /opt/ga_chp/pre_processing/scaling_transformation/runadvancedpreprocessor.sh ']
+task_5_run_advanced_preprocessor_cmd = ' '.join(task_5_run_advanced_preprocessor_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'ga_chp_scaled_features_prediction')
+task_6_move_scaled_features_metadata_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'bash /opt/ga_chp/pre_processing/ga_chp_move_metadata.sh ga_chp_scaled_features_prediction ']
+task_6_move_scaled_features_metadata_cmd = ' '.join(task_6_move_scaled_features_metadata_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'runbatchinference.sh')
+task_7_run_batch_inference_cmd_parts = [
+    f'DAY_AS_STR={day_as_str}',
+    f'UNIQUE_HASH={unique_hash}',
+    'TRAINING_OR_PREDICTION=prediction',
+    'MODELS_DIR=/opt/models',
+    'docker run --rm --net host',
+    '-v /opt/ga_chp:/opt/ga_chp:ro',
+    '-v /opt/models:/opt/models:ro',
+    '-v /opt/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop:ro',
+    '-e ENVIRONMENT_TYPE',
+    '-e DAY_AS_STR',
+    '-e UNIQUE_HASH',
+    '-e TRAINING_OR_PREDICTION',
+    '-e MODELS_DIR',
+    '-e MORPHL_SERVER_IP_ADDRESS',
+    '-e MORPHL_CASSANDRA_USERNAME',
+    '-e MORPHL_CASSANDRA_KEYSPACE',
+    '-e MORPHL_CASSANDRA_PASSWORD',
+    '-e LIBHDFS3_CONF',
+    'pythoncontainer',
+    'bash /opt/ga_chp/prediction/batch_inference/runbatchinference.sh ']
+task_7_run_batch_inference_cmd = ' '.join(task_7_run_batch_inference_cmd_parts)
+
+# Do not remove the extra space at the end (the one after 'ga_chp_generate_id_files_prediction.sh')
+task_1_generate_id_files_prediction = BashOperator(
+    task_id='task_1_generate_id_files_prediction',
+    bash_command='bash /opt/ga_chp/prediction/pipeline_setup/ga_chp_generate_id_files_prediction.sh ',
+    dag=dag)
+
+task_2_truncate_tables = BashOperator(
+    task_id='task_2_truncate_tables',
+    bash_command=task_2_truncate_tables_cmd,
+    dag=dag)
+
+task_3_run_basic_preprocessor = BashOperator(
+    task_id='task_3_run_basic_preprocessor',
+    bash_command=task_3_run_basic_preprocessor_cmd,
+    dag=dag)
+
+task_4_move_preproc_metadata = BashOperator(
+    task_id='task_4_move_preproc_metadata',
+    bash_command=task_4_move_preproc_metadata_cmd,
+    dag=dag)
+
+task_5_run_advanced_preprocessor = BashOperator(
+    task_id='task_5_run_advanced_preprocessor',
+    bash_command=task_5_run_advanced_preprocessor_cmd,
+    dag=dag)
+
+task_6_move_scaled_features_metadata = BashOperator(
+    task_id='task_6_move_scaled_features_metadata',
+    bash_command=task_6_move_scaled_features_metadata_cmd,
+    dag=dag)
+
+task_7_run_batch_inference = BashOperator(
+    task_id='task_7_run_batch_inference',
+    bash_command=task_7_run_batch_inference_cmd,
+    dag=dag)
+
+task_2_truncate_tables.set_upstream(task_1_generate_id_files_prediction)
+task_3_run_basic_preprocessor.set_upstream(task_2_truncate_tables)
+task_4_move_preproc_metadata.set_upstream(task_3_run_basic_preprocessor)
+task_5_run_advanced_preprocessor.set_upstream(task_4_move_preproc_metadata)
+task_6_move_scaled_features_metadata.set_upstream(task_5_run_advanced_preprocessor)
+task_7_run_batch_inference.set_upstream(task_6_move_scaled_features_metadata)
+
