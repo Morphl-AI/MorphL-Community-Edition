@@ -8,7 +8,11 @@ The MorphL Orchestrator is the backbone of the MorphL platform. It sets up the i
 
 - **Prediction Pipeline** - It generates predictions based on the model that was trained. It is triggered at the final step of the ingestion pipeline through a preflight check.
 
-The pipelines are set up using [Apache Airflow](https://github.com/apache/incubator-airflow).
+The pipelines are set up using [Apache Airflow](https://github.com/apache/incubator-airflow). Below you can see a diagram of the platform's architecture:
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/Morphl-AI/MorphL-Architecture/master/churn-prediction/Churn.Final.Architecture.png" style="width:1000px; height: auto;" />
+</div>
 
 ### Prerequisites
 
