@@ -47,9 +47,10 @@ The MorphL Platform consists of two main components:
 
 ---
 
-The code that you'll find in this repository is a mirror that we use for making releases. If you want to contribute to a pipeline or create a new model, please open a pull request in the corresponding repository from the [MorphL-AI organization](https://github.com/Morphl-AI).
+The code that you'll find in this repository is a mirror that we use for making releases. If you want to contribute to a pipeline or create a new model, please open a pull request in the corresponding repository from the [MorphL-AI organization](https://github.com/Morphl-AI).  
 
-This is project is currently under development. You can read more about it here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio
+
+This is project is currently under development. You can read more about it here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio. Join our Slack community and chat with other developers: http://bit.ly/morphl-slack
 
 ## License
 
