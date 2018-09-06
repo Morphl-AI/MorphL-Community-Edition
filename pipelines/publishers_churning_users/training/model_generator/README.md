@@ -1,4 +1,4 @@
-# Model Generator for Predicting Churned Users for Publishers
+# Model Generator for Predicting Churning Users for Publishers
 
 ## Purpose
 

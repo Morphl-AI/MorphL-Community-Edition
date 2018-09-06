@@ -1,4 +1,4 @@
-# Scaler and Transformer for Predicting Churned Users for Publishers
+# Scaler and Transformer for Predicting Churning Users for Publishers
 
 ## Purpose
 

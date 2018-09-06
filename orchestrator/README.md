@@ -26,7 +26,7 @@ Bootstrap the installation by running the following commands as root:
 
 ```
 WHERE_THE_ORCHESTRATOR_IS='https://github.com/Morphl-AI/MorphL-Orchestrator'
-WHERE_GA_CHP_IS='https://github.com/Morphl-AI/MorphL-Model-Publishers-Churned-Users'
+WHERE_GA_CHP_IS='https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users'
 
 apt update -qq && apt -y install git ca-certificates
 

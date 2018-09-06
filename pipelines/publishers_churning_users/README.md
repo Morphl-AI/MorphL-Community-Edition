@@ -1,4 +1,4 @@
-# MorphL Model for Predicting Churned Users for Publishers
+# MorphL Model for Predicting Churning Users for Publishers
 
 ## Introduction
 
