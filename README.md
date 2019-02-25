@@ -36,7 +36,7 @@ We're utilizing open-source machine learning algorithms to build predictive mode
 
 # MorphL Cloud
 
-On-premises, Cloud or Hybrid. We offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
+On-premises, Cloud or Hybrid. For companies that want to AI-enhance their digital experience without the hassle of dealing with a BigData & Machine Learning infrastructure, we offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
 
 If you run a business and are planning on using MorphL in a revenue-generating product, it makes business sense to sponsor MorphL development: it ensures the project that your product relies on stays healthy and actively maintained. It can also help your exposure in the open-source community and makes it easier to attract developers.
 
