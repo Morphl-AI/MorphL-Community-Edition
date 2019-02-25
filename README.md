@@ -2,40 +2,45 @@
     <img src="https://raw.githubusercontent.com/Morphl-Project/media-kit/master/05%20-%20Banners/morphl-banner-color.png" style="width:1200px; height: auto;" />
 </div>
 
-# What is MorphL
+# MorphL Community Edition
 
-MorphL is an open-source initiative that uses machine learning to predict users' behavior in mobile & web applications and enable personalized user experiences to increase engagement & conversion rates. Morphl.io is funded through [Google Digital News Initiative](https://newsinitiative.withgoogle.com/dnifund/) (€ 50,000 grant).
+MorphL Community Edition uses Machine Learning and BigData to predict user behaviors in digital products and services with the goal of increasing KPIs (click-through rates, conversion rates, etc.) through personalization. Morphl.io is funded through [Google Digital News Initiative](https://newsinitiative.withgoogle.com/dnifund/) and [European Data Incubator](https://edincubator.eu/).
 
-The product development process usually consists of a few important phases: <strong>planning</strong>, <strong>design</strong>, <strong>development</strong> and <strong>launch</strong>. To increase engagement and conversion rates, this process undergoes multiple iterations which developers seldom navigate by looking at the data. Usually there’s somebody else, be it a product owner, marketing or sales person, analyzing it and feeding developers a feature list needed for the next product release.
+The process of building successful data-driven products undergoes many iterations. Data scientists, product manager, marketing or sales people and software developers need to come together to analyze the data and create a feature list for the next product release. This leads to lots of guess-work, not to mention the huge amount of time and resources required to reach a decent result, whether that’s spent on analyzing the data or developing new or improved product features.
 
-There lies the gap between developers, marketers and users which leads to lots of guess-work. Consequently, the product development feedback loop is broken.
-
-MorphL uses machine learning to optimize user interactions by <strong>analyzing product micro-metrics</strong> and enabling automatic user interface adaptation to provide a <strong>personalized user experience</strong>.
+MorphL is a Machine Learning platform that reduces the complexity of implementing a **personalized digital experience** by offering built-in ML models & algorithms that cover a wide range of data sources and use-cases.
 
 # How it works
 
 <table>
     <tr>
-        <td><img src="http://morphl.io/images/icons/icon-integrations.svg" width="120"/></td><td><strong>Morphl Integrations</strong><br/>
-We integrate with Google Analytics, Facebook Ads, Mixpanel, Kissmetrics and other platforms to identify user behaviors.</td>
+        <td><img src="https://morphl.io/images/icons/analytics/file-2.svg" width="120"/></td><td><strong>MorphL Platform</strong><br/>
+        The backbone of the platform is the <strong>MorphL Orchestrator</strong>, that sets up the BigData techstack required for running pipelines for data ingestion, models training and generating predictions.
+        </td>
     </tr>
     <tr>
-        <td><img src="http://morphl.io/images/icons/icon-predictive-models.svg" width="120"/></td><td><strong>Morphl Predictive Models</strong><br/>
+        <td><img src="https://morphl.io/images/icons/analytics/server.svg" width="120"/></td><td><strong>MorphL Integrations</strong><br/>
+We integrate with various data sources. At the moment, we support Google Analytics, Google Analytics 360, BigQuery, Google Cloud Storage and AWS S3.</td>
+    </tr>
+    <tr>
+        <td><img src="https://morphl.io/images/icons/analytics/analytics-1.svg" width="120"/></td><td><strong>MorphL Predictive Models</strong><br/>
 We're utilizing open-source machine learning algorithms to build predictive models which are then used to develop predictive applications.</td>
     </tr>
     <tr>
-        <td><img src="http://morphl.io/images/icons/icon-personalized-experience.svg" width="120"/></td><td><strong>Morphl Personalized Experience</strong><br/>
-Developers can integrate micro-metrics directly in the user-facing product components and use the MorphL insights to build personalized user experiences.</td>
-    </tr>
+        <td><img src="https://morphl.io/images/icons/analytics/api.svg" width="120"/></td><td><strong>MorphL Predictions API</strong><br/>
+        All predictions are available via a REST API, which makes it easier for software developers to incorporate AI capabilities within their digital products or services. 
+    </td>
+</tr>
+
 </table>
 
 # Get early access
 
-On-premises, Cloud, or Hybrid. We offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
+On-premises, Cloud or Hybrid. We offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
 
 If you run a business and are planning on using MorphL in a revenue-generating product, it makes business sense to sponsor MorphL development: it ensures the project that your product relies on stays healthy and actively maintained. It can also help your exposure in the open-source community and makes it easier to attract developers.
 
-For enterprise sales or partnerships please contact us [here](https://morphl.io/contact.html) or at contact [at] morphl.io.
+For enterprise sales or partnerships please contact us [here](https://morphl.io/company/contact.html) or at contact [at] morphl.io.
 
 # Architecture
 
@@ -47,10 +52,9 @@ The MorphL Platform consists of two main components:
 
 ---
 
-The code that you'll find in this repository is a mirror that we use for making releases. If you want to contribute to a pipeline or create a new model, please open a pull request in the corresponding repository from the [MorphL-AI organization](https://github.com/Morphl-AI).  
+The code that you'll find in this repository is a mirror that we use for making releases. If you want to contribute to a pipeline or create a new model, please open a pull request in the corresponding repository from the [MorphL-AI organization](https://github.com/Morphl-AI).
 
-
-This is project is currently under development. You can read more about it here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio. Join our Slack community and chat with other developers: http://bit.ly/morphl-slack
+You can read more about MorphL here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio. Join our Slack community and chat with other developers: http://bit.ly/morphl-slack
 
 ## License
 
