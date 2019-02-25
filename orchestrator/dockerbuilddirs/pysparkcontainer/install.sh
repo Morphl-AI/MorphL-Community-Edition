@@ -4,6 +4,7 @@ mkdir /opt/tmp
 
 SP_CASS_CONN_VERSION=2.3.1
 JSR166E_VERSION=1.1.0
+SPARK_AVRO_VERSION=2.4.0
 
 echo 'Setting up the JDK ...'
 JDK_TGZ_URL=$(lynx -dump https://www.azul.com/downloads/zulu/zulu-linux/ | grep -o http.*jdk8.*x64.*gz$ | head -1)
@@ -29,6 +30,7 @@ sed 's/INFO/FATAL/;s/WARN/FATAL/;s/ERROR/FATAL/' log4j.properties.template > log
 
 wget -qO /opt/spark/jars/spark-cassandra-connector.jar https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_2.11/${SP_CASS_CONN_VERSION}/spark-cassandra-connector_2.11-${SP_CASS_CONN_VERSION}.jar
 wget -qO /opt/spark/jars/jsr166e.jar https://repo1.maven.org/maven2/com/twitter/jsr166e/${JSR166E_VERSION}/jsr166e-${JSR166E_VERSION}.jar
+wget -qO /opt/spark/jars/spark-avro.jar https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.11/${SPARK_AVRO_VERSION}/spark-avro_2.11-${SPARK_AVRO_VERSION}.jar
 
 echo 'Setting up Hadoop ...'
 HADOOP_TGZ_URL=$(lynx -dump ${MIRROR}hadoop/common/stable/ | grep -o http.*gz$ | grep -v src | head -1)

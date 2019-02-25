@@ -15,6 +15,7 @@ if [ ${rc} -eq 0 ]; then
   stop_airflow.sh
   rm -rf /home/airflow/airflow/dags/*
   airflow resetdb -y &>/dev/null
+  python /opt/orchestrator/bootstrap/runasairflow/python/set_up_airflow_authentication.py
   START_DATE_AS_PY_CODE=$(<${TEMPFILE_A})
   sed "s/START_DATE_AS_PY_CODE/${START_DATE_AS_PY_CODE}/g" /opt/ga_chp/ingestion/pipeline_setup/ga_chp_ingestion_airflow_dag.py.template > /home/airflow/airflow/dags/ga_chp_ingestion_pipeline.py
   START_DATE_AS_PY_CODE=$(<${TEMPFILE_B})

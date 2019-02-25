@@ -1,0 +1,46 @@
+server {
+    listen      80;
+    listen [::]:80;
+    server_name API_DOMAIN;
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
+
+    # for certbot challenges (renewal process)
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        root /data/letsencrypt;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name API_DOMAIN;
+
+    server_tokens off;
+
+    ssl_certificate /etc/letsencrypt/live/API_DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/API_DOMAIN/privkey.pem;
+
+    # Home page
+    location =/ {
+        proxy_pass http://kubernetes-upstream-auth;
+    }
+
+    # Authorize / Authentication routes
+    location ~ ^/(authorize|dashboard) {
+        proxy_pass http://kubernetes-upstream-auth;
+    }
+
+    # Churning users with Google Analytics routes
+    location ^~ /churning {
+        proxy_pass http://kubernetes-upstream-ga-chp;
+    }
+
+    # Churning users with BigQuery routes
+    location ^~ /churning-bq {
+        proxy_pass http://kubernetes-upstream-ga-chp-bq;
+    }
+}

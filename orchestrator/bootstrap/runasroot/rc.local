@@ -2,4 +2,5 @@
 sudo -Hiu airflow bash -c /opt/cassandra/bin/start_cassandra.sh
 sudo -Hiu airflow bash -c /opt/hadoop/bin/start_hdfs.sh
 sudo -Hiu airflow bash -c /opt/anaconda/bin/start_airflow.sh
+docker start apicontainer
 exit 0

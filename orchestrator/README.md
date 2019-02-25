@@ -2,7 +2,7 @@
 
 The MorphL Orchestrator is the backbone of the MorphL platform. It sets up the infrastructure and software that are necessary for running the MorphL platform. It consists of 3 pipelines:
 
-- **Ingestion Pipeline** - It runs a series of connectors responsible for gathering data from various APIs (Google Analytics, Mixpanel, etc.) and save it into Cassandra tables.
+- **Ingestion Pipeline** - It runs a series of connectors responsible for gathering data from various APIs (Google Analytics, Mixpanel, Google Cloud Storage, etc.) and save it into Cassandra tables.
 
 - **Training Pipeline** - Consists of pre-processors (responsible for cleaning, formatting, deduplicating, normalizing and transforming data) and model training.
 
@@ -16,9 +16,41 @@ The pipelines are set up using [Apache Airflow](https://github.com/apache/incuba
 
 ### Prerequisites
 
+#### 1) Virtual Instance
+
 The orchestrator can be installed on a virtual instance on a cloud platform of your choice (Google Cloud Platform, Amazon Web Services, etc.).
 
 We recommend using a clean Ubuntu 16.04 machine, minimum 2 vCPUs, 16GB of RAM, 50GB storage.
+
+#### 2) API subdomain
+
+Model predictions will be exposed through a secure API, for easy integration within a web or mobile app. The API needs an associated domain or subdomain name.
+
+##### A record
+
+In your DNS zone, add an A record with your subdomain and external IP address of the orchestrator instance:
+
+`A api.yourdomain.com ???.???.???.???`
+
+where `???.???.???.???` is the IP address of the Ubuntu machine. You should be able to get this IP address from your cloud management interface or by running from your machine:
+
+`dig +short myip.opendns.com @resolver1.opendns.com`
+
+- **Make sure you're using a static IP address that doesn't change when the instance is rebooted.**
+
+- **Also, allow both HTTP and HTTPS traffic to your VM**.
+
+##### Settings file
+
+Add your subdomain name in a text file on your machine:
+
+```
+cat > /opt/settings/apidomain.txt << EOF
+api.yourdomain.com
+EOF
+```
+
+SSL certificates for the API subdomain will be automatically generated and renewed using [Let's Encrypt](https://letsencrypt.org/).
 
 ## Quick Start Guide
 
@@ -30,12 +62,16 @@ Bootstrap the installation by running the following commands as root:
 
 ```
 WHERE_THE_ORCHESTRATOR_IS='https://github.com/Morphl-AI/MorphL-Orchestrator'
+WHERE_AUTH_IS='https://github.com/Morphl-AI/MorphL-Auth-API.git'
 WHERE_GA_CHP_IS='https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users'
+WHERE_GA_CHP_BQ_IS='https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users-BigQuery'
 
 apt update -qq && apt -y install git ca-certificates
 
 git clone ${WHERE_THE_ORCHESTRATOR_IS} /opt/orchestrator
+git clone ${WHERE_AUTH_IS} /opt/auth
 git clone ${WHERE_GA_CHP_IS} /opt/ga_chp
+git clone ${WHERE_GA_CHP_BQ_IS} /opt/ga_chp_bq
 
 bash /opt/orchestrator/bootstrap/runasroot/rootbootstrap.sh
 ```
@@ -46,7 +82,7 @@ Once the installation is done, check the bottom of the output to see the if the 
 
 At this point a few more setup steps are necessary.
 
-### Step 2) Providing connectors credentials
+### Step 2) Provide connectors credentials
 
 The next step is creating a series of files that store credentials for connecting to various data sources APIs.
 
@@ -56,36 +92,24 @@ From the root prompt, log into `airflow`:
 su - airflow
 ```
 
-#### Step 2.1) Google Analytics
+**Add credentials depending on our data source API**:
 
-Connecting to **Google Analytics API v4** requires creating a service account and retrieving a view ID from your Google Analytics dashboard. The orchestrator assumes that your Google Analytics dashboard has already been configured to allow exporting of granular data (at the browser & session level). You can read [here](https://github.com/Morphl-Project/MorphL-Collectors/tree/master/google-analytics) about the required setup and **creating a service account**.
+- Churning users based on Google Analytics data (_GA_CHP_ model) - see docs [here](https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users#orchestrator-setup).
 
-Paste your key file into `/opt/secrets/keyfile.json` and your view ID into `/opt/secrets/viewid.txt`, possibly using syntax like this:
-
-```
-cat > /opt/secrets/keyfile.json << EOF
-{
-...supersecretkeyfilecontents...
-}
-EOF
-
-cat > /opt/secrets/viewid.txt << EOF
-123123456456123123
-EOF
-```
+- Churning users based on Google Analytics 360 with BigQuery integration (_GA_CHP_BQ_ model) - see docs [here](https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users-BigQuery/tree/master/bq_extractor#orchestrator-setup).
 
 Log out of `airflow` and back in again, and verify that your key file and view ID have been configured correctly:
 
 ```
 cat /opt/secrets/keyfile.json
 
-env | grep VIEW_ID
+env | grep KEY_FILE_LOCATION
 ```
 
-If the output of `env | grep VIEW_ID` is empty, like this:
+If the output of `env | grep KEY_FILE_LOCATION` is empty, like this:
 
 ```
-VIEW_ID=
+KEY_FILE_LOCATION=
 ```
 
 it means you have forgotten to log out of `airflow` and back in again.
@@ -99,7 +123,11 @@ To train the models, you'll need to bring in historical data. If you don't have 
 Run the command:
 
 ```
+# Load historical data for churning users with Google Analytics
 load_ga_chp_historical_data.sh
+
+# OR load historical data for churning users with Big Query
+load_ga_chp_bq_historical_data.sh
 ```
 
 You will be presented with a prompt that lets you select the time interval for loading the data:
@@ -152,7 +180,11 @@ Keep refreshing the UI page until all the data for the number of days you specif
 Once all the raw data has been loaded, there is one more thing to do for the ML pipeline to be fully operational:
 
 ```
+# Trigger pipeline for churning users with Google Analytics
 airflow trigger_dag ga_chp_training_pipeline
+
+# OR trigger pipeline for churning users with Big Query
+airflow trigger_dag ga_chp_bq_training_pipeline
 ```
 
 The command above will trigger the training pipeline, and upon running it you should see output similar to this:
@@ -174,16 +206,28 @@ From this point forward, **the platform is on auto-pilot** and will on a regular
 Once a model has been trained, the prediction pipeline also needs to be triggered. You can wait until it is automatically triggered by the preflight check at the end of the ingestion pipeline (which runs daily) or you can trigger it yourself with the following command:
 
 ```
+# Trigger pipeline for churning users with Google Analytics
 airflow trigger_dag ga_chp_prediction_pipeline
+
+# OR trigger pipeline for churning users with Big Query
+airflow trigger_dag ga_chp_bq_prediction_pipeline
+
 ```
 
-After the pipeline is triggered, predictions can be accessed using the following command:
+After the pipeline is triggered, the API can be accessed using the following command:
 
 ```
-curl -s http://${GA_CHP_KUBERNETES_CLUSTER_IP_ADDRESS}/getprediction/GA1
+# Authorize API
+curl -s http://${AUTH_KUBERNETES_CLUSTER_IP_ADDRESS}
+
+# Churning users API
+curl -s http://${GA_CHP_KUBERNETES_CLUSTER_IP_ADDRESS}/churning
+
+# Churning users with BigQuery API
+curl -s http://${GA_CHP_BQ_KUBERNETES_CLUSTER_IP_ADDRESS}/churning-bq
 ```
 
-`GA1` represents a client ID.
+See [GA_CHP Wiki](https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users/wiki/Public-API-Endpoints) or [GA_CHP_BQ wiki](https://github.com/Morphl-AI/MorphL-Model-Publishers-Churning-Users-BigQuery/wiki/Public-API-Endpoints) for examples on how to access predictions.
 
 ### Troubleshooting
 
@@ -192,8 +236,6 @@ Should you need the connection details for Cassandra, the user name is `morphl` 
 ```
 env | grep MORPHL_CASSANDRA_PASSWORD
 ```
-
-[TBA] - debugging pipeline errors (Airflow INFO vs ERROR logs)
 
 ### (Optional) PySpark development
 
