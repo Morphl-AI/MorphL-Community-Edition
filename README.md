@@ -34,7 +34,7 @@ We're utilizing open-source machine learning algorithms to build predictive mode
 
 </table>
 
-# Get early access
+# MorphL Cloud
 
 On-premises, Cloud or Hybrid. We offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
 
