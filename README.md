@@ -4,11 +4,11 @@
 
 # MorphL Community Edition
 
-MorphL Community Edition uses Machine Learning and BigData to predict user behaviors in digital products and services with the goal of increasing KPIs (click-through rates, conversion rates, etc.) through personalization. Morphl.io is funded through [Google Digital News Initiative](https://newsinitiative.withgoogle.com/dnifund/) and [European Data Incubator](https://edincubator.eu/).
+MorphL Community Edition uses Big Data & Machine Learning to predict user behaviors in digital products and services with the goal of increasing KPIs (click-through rates, conversion rates, etc.) through personalization. MorphL AI is funded through [Google Digital News Initiative](https://newsinitiative.withgoogle.com/dnifund/) and [European Data Incubator](https://edincubator.eu/).
 
 The process of building successful data-driven products undergoes many iterations. Data scientists, product manager, marketing or sales people and software developers need to come together to analyze the data and create a feature list for the next product release. This leads to lots of guess-work, not to mention the huge amount of time and resources required to reach a decent result, whether that’s spent on analyzing the data or developing new or improved product features.
 
-MorphL is a Machine Learning platform that reduces the complexity of implementing a **personalized digital experience** by offering built-in ML models & algorithms that cover a wide range of data sources and use-cases.
+MorphL reduces the complexity of implementing a **personalized digital experience** by offering built-in ML models & algorithms that cover a wide range of data sources and use-cases.
 
 # How it works
 
