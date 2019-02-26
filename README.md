@@ -34,14 +34,6 @@ We're utilizing open-source machine learning algorithms to build predictive mode
 
 </table>
 
-# MorphL Cloud
-
-On-premises, Cloud or Hybrid. For companies that want to AI-enhance their digital experience without the hassle of dealing with a BigData & Machine Learning infrastructure, we offer several deployment options, giving you the flexibility to leverage MorphL based on the model that best suits your business needs and your budget.
-
-If you run a business and are planning on using MorphL in a revenue-generating product, it makes business sense to sponsor MorphL development: it ensures the project that your product relies on stays healthy and actively maintained. It can also help your exposure in the open-source community and makes it easier to attract developers.
-
-For enterprise sales or partnerships please contact us [here](https://morphl.io/company/contact.html) or at contact [at] morphl.io.
-
 # Architecture
 
 The MorphL Platform consists of two main components:
@@ -55,6 +47,12 @@ The MorphL Platform consists of two main components:
 The code that you'll find in this repository is a mirror that we use for making releases. If you want to contribute to a pipeline or create a new model, please open a pull request in the corresponding repository from the [MorphL-AI organization](https://github.com/Morphl-AI).
 
 You can read more about MorphL here: https://morphl.io. Follow us on Twitter: https://twitter.com/morphlio. Join our Slack community and chat with other developers: http://bit.ly/morphl-slack
+
+# MorphL Cloud
+
+On-premises, Cloud or Hybrid. For companies that want to AI-enhance their digital products & services without the hassle of dealing with a Big Data & Machine Learning infrastructure, we offer several deployment options that best suits your business needs and budget.
+
+For enterprise sales or partnerships please contact us [here](https://morphl.io/company/contact.html) or at contact [at] morphl.io.
 
 ## License
 
