@@ -15,7 +15,7 @@ MorphL reduces the complexity of implementing a **personalized digital experienc
 <table>
     <tr>
         <td><img src="https://morphl.io/images/icons/analytics/file-2.svg" width="120"/></td><td><strong>MorphL Platform</strong><br/>
-        The backbone of the platform is the <strong>MorphL Orchestrator</strong>, that sets up the BigData techstack required for running pipelines for data ingestion, models training and generating predictions.
+        The backbone of the platform is the <strong>MorphL Orchestrator</strong>, that sets up the Big Data techstack required for running pipelines for data ingestion, models training and generating predictions.
         </td>
     </tr>
     <tr>
