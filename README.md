@@ -34,6 +34,8 @@ We're utilizing open-source machine learning algorithms to build predictive mode
 
 </table>
 
+The setup guide is available [here](orchestrator/).
+
 # Architecture
 
 The MorphL Platform consists of two main components:
