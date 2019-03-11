@@ -1,3 +1,3 @@
-INSERT INTO morphl.ga_chp_valid_models (always_zero,day_as_str,tstamp,unique_hash,is_model_valid)
-VALUES (0,'DAY_AS_STR',toTimestamp(now()),'UNIQUE_HASH',IS_MODEL_VALID);
+INSERT INTO morphl.ga_chp_valid_models (always_zero,day_as_str,tstamp,unique_hash,threshold,accuracy,loss,is_model_valid)
+VALUES (0,'DAY_AS_STR',toTimestamp(now()),'UNIQUE_HASH',THRESHOLD,ACCURACY,LOSS,IS_MODEL_VALID);
 

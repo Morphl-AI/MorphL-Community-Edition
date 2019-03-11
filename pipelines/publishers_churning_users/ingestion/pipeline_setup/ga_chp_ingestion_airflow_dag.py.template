@@ -15,7 +15,7 @@ dag = DAG(dag_id='ga_chp_ingestion_pipeline',
 task_1_run_connector_cmd_parts = [
     'DAY_OF_DATA_CAPTURE={{ ds }}',
     'docker run --rm',
-    '-v /opt/secrets:/opt/secrets',
+    '-v /opt/secrets:/opt/secrets:ro',
     '-v /opt/ga_chp:/opt/ga_chp:ro',
     '-e DAY_OF_DATA_CAPTURE',
     '-e KEY_FILE_LOCATION',

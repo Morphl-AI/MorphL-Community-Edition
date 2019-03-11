@@ -253,9 +253,17 @@ def main():
                     f.col('jdata.dimensions').alias('jdata_dimensions'),
                     f.col('jdata.metrics').alias('jdata_metrics')))
 
+    # An example row taken from the dataframe after_json_parsing_df['ga_cus_df'] would look like this:
+    # jmeta_dimensions: ['ga:dimension1', 'ga:dimension2', 'ga:sessionCount', 'ga:daysSinceLastSession']
+    # jmeta_metrics:    ['ga:sessions', 'ga:pageviews', 'ga:uniquePageviews', 'ga:screenViews', 'ga:hits', 'ga:timeOnPage']
+    # jdata_dimensions: ['GA201143951.1536231516', '1536231726136.guq9l63l', 1, 0]
+    # jdata_metrics:    [([1, 1, 1, 0, 4, 210.0])]
+
     processed_users_dict = process(after_json_parsing_df['ga_cu_df'],
                                    primary_key['ga_cu_df'],
                                    field_baselines['ga_cu_df'])
+
+    # Renaming columns in the users dataframe to avoid ambiguity
     users_df = (
         processed_users_dict['result_df']
             .withColumnRenamed('client_id', 'u_client_id')
@@ -265,24 +273,87 @@ def main():
     processed_sessions_dict = process(after_json_parsing_df['ga_cus_df'],
                                       primary_key['ga_cus_df'],
                                       field_baselines['ga_cus_df'])
+
+    # The schema for processed_sessions_dict['result_df'] is:
+    # |-- client_id: string (nullable = true)
+    # |-- day_of_data_capture: date (nullable = true)
+    # |-- session_id: string (nullable = true)
+    # |-- session_count: float (nullable = true)
+    # |-- days_since_last_session: float (nullable = true)
+    # |-- sessions: float (nullable = true)
+    # |-- pageviews: float (nullable = true)
+    # |-- unique_pageviews: float (nullable = true)
+    # |-- screen_views: float (nullable = true)
+    # |-- hits: float (nullable = true)
+    # |-- time_on_page: float (nullable = true)
+
+    # Renaming columns in the sessions dataframe to avoid ambiguity
     sessions_df = (
         processed_sessions_dict['result_df']
             .withColumnRenamed('client_id', 's_client_id')
             .withColumnRenamed('day_of_data_capture', 's_day_of_data_capture')
             .withColumnRenamed('sessions', 's_sessions'))
 
+    # Joining users and sessions
     joined_df = sessions_df.join(
         users_df, (sessions_df.s_client_id == users_df.u_client_id) &
                   (sessions_df.s_day_of_data_capture == users_df.u_day_of_data_capture))
 
+    # The schema for joined_df is:
+    # |-- s_client_id: string (nullable = true)
+    # |-- s_day_of_data_capture: date (nullable = true)
+    # |-- session_id: string (nullable = true)
+    # |-- session_count: float (nullable = true)
+    # |-- days_since_last_session: float (nullable = true)
+    # |-- s_sessions: float (nullable = true)
+    # |-- pageviews: float (nullable = true)
+    # |-- unique_pageviews: float (nullable = true)
+    # |-- screen_views: float (nullable = true)
+    # |-- hits: float (nullable = true)
+    # |-- time_on_page: float (nullable = true)
+    # |-- u_client_id: string (nullable = true)
+    # |-- u_day_of_data_capture: date (nullable = true)
+    # |-- device_category: string (nullable = true)
+    # |-- u_sessions: float (nullable = true)
+    # |-- session_duration: float (nullable = true)
+    # |-- entrances: float (nullable = true)
+    # |-- bounces: float (nullable = true)
+    # |-- exits: float (nullable = true)
+    # |-- page_value: float (nullable = true)
+    # |-- page_load_time: float (nullable = true)
+    # |-- page_load_sample: float (nullable = true)
+
     s_schema_as_list = [
         prefix_sessions(fname, 's') for fname in processed_sessions_dict['schema_as_list']]
+
+    # s_schema_as_list is:
+    # ['session_count',
+    #  'days_since_last_session',
+    #  's_sessions',
+    #  'pageviews',
+    #  'unique_pageviews',
+    #  'screen_views',
+    #  'hits',
+    #  'time_on_page']
 
     u_schema_as_list = [
         prefix_sessions(fname, 'u') for fname in processed_users_dict['schema_as_list']]
 
+    # u_schema_as_list is:
+    # ['device_category',
+    #  'u_sessions',
+    #  'session_duration',
+    #  'entrances',
+    #  'bounces',
+    #  'exits',
+    #  'page_value',
+    #  'page_load_time',
+    #  'page_load_sample']
+
+    # List of dataframe fields to keep, configurable dynamically via the field baselines
     tr_raw_fields_to_select = primary_key['ga_cus_df'] + s_schema_as_list + u_schema_as_list
 
+    # Encoding the device category
     features_raw_df = (
         joined_df
             .withColumnRenamed('s_client_id', 'client_id')
@@ -300,6 +371,30 @@ def main():
             .drop('device_category')
             .repartition(32))
 
+    # The schema for features_raw_df is:
+    # |-- client_id: string (nullable = true)
+    # |-- day_of_data_capture: date (nullable = true)
+    # |-- session_id: string (nullable = true)
+    # |-- session_count: float (nullable = true)
+    # |-- days_since_last_session: float (nullable = true)
+    # |-- s_sessions: float (nullable = true)
+    # |-- pageviews: float (nullable = true)
+    # |-- unique_pageviews: float (nullable = true)
+    # |-- screen_views: float (nullable = true)
+    # |-- hits: float (nullable = true)
+    # |-- time_on_page: float (nullable = true)
+    # |-- u_sessions: float (nullable = true)
+    # |-- session_duration: float (nullable = true)
+    # |-- entrances: float (nullable = true)
+    # |-- bounces: float (nullable = true)
+    # |-- exits: float (nullable = true)
+    # |-- page_value: float (nullable = true)
+    # |-- page_load_time: float (nullable = true)
+    # |-- page_load_sample: float (nullable = true)
+    # |-- is_desktop: double (nullable = false)
+    # |-- is_mobile: double (nullable = false)
+    # |-- is_tablet: double (nullable = false)
+
     features_raw_df.cache()
 
     features_raw_df.createOrReplaceTempView('features_raw')
@@ -315,10 +410,7 @@ def main():
          .options(**save_options_ga_chp_features_raw)
          .save())
 
-    higher_session_counts_sql = 'SELECT * FROM features_raw WHERE session_count > 1'
-    higher_session_counts_df = spark_session.sql(higher_session_counts_sql)
-    higher_session_counts_df.createOrReplaceTempView('higher_session_counts')
-
+    # Using window functions: https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html
     grouped_by_client_id_before_dedup_sql_parts = [
         'SELECT',
         'client_id,',
@@ -338,15 +430,35 @@ def main():
         'ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY day_of_data_capture DESC) AS rownum,',
         'AVG(days_since_last_session) OVER (PARTITION BY client_id) AS avgdays',
         'FROM',
-        'higher_session_counts'
+        'features_raw'
     ]
     grouped_by_client_id_before_dedup_sql = ' '.join(grouped_by_client_id_before_dedup_sql_parts)
     grouped_by_client_id_before_dedup_df = spark_session.sql(grouped_by_client_id_before_dedup_sql)
     grouped_by_client_id_before_dedup_df.createOrReplaceTempView('grouped_by_client_id_before_dedup')
 
+    # Only keeping the most recent record from every client id
+    # rownum = 1 while day_of_data_capture is sorted in descending order
     grouped_by_client_id_sql = 'SELECT * FROM grouped_by_client_id_before_dedup WHERE rownum = 1'
     grouped_by_client_id_df = spark_session.sql(grouped_by_client_id_sql)
     grouped_by_client_id_df.createOrReplaceTempView('grouped_by_client_id')
+
+    # The schema for grouped_by_client_id_df is:
+    # |-- client_id: string (nullable = true)
+    # |-- pageviews: double (nullable = true)
+    # |-- unique_pageviews: double (nullable = true)
+    # |-- time_on_page: double (nullable = true)
+    # |-- u_sessions: double (nullable = true)
+    # |-- session_duration: double (nullable = true)
+    # |-- entrances: double (nullable = true)
+    # |-- bounces: double (nullable = true)
+    # |-- exits: double (nullable = true)
+    # |-- is_desktop: double (nullable = true)
+    # |-- is_mobile: double (nullable = true)
+    # |-- is_tablet: double (nullable = true)
+    # |-- session_count: float (nullable = true)
+    # |-- days_since_last_session: float (nullable = true)
+    # |-- rownum: integer (nullable = true)
+    # |-- avgdays: double (nullable = true)
 
     if TRAINING_OR_PREDICTION == 'training':
         mean_value_of_avg_days_sql = 'SELECT AVG(avgdays) mean_value_of_avgdays FROM grouped_by_client_id'
@@ -364,6 +476,22 @@ def main():
                         'is_desktop', 'is_mobile', 'is_tablet',
                         'churned')
                 .repartition(32))
+
+        # The schema for final_df is:
+        # |-- client_id: string (nullable = true)
+        # |-- pageviews: double (nullable = true)
+        # |-- unique_pageviews: double (nullable = true)
+        # |-- time_on_page: double (nullable = true)
+        # |-- u_sessions: double (nullable = true)
+        # |-- session_duration: double (nullable = true)
+        # |-- entrances: double (nullable = true)
+        # |-- bounces: double (nullable = true)
+        # |-- exits: double (nullable = true)
+        # |-- session_count: float (nullable = true)
+        # |-- is_desktop: double (nullable = true)
+        # |-- is_mobile: double (nullable = true)
+        # |-- is_tablet: double (nullable = true)
+        # |-- churned: double (nullable = false)
 
         final_df.cache()
 
@@ -386,18 +514,29 @@ def main():
         with open(CHURN_THRESHOLD_FILE, 'r') as fh:
             churn_threshold = fh.read().strip()
 
-        under_threshold_sql = f'SELECT * FROM grouped_by_client_id WHERE avgdays < {churn_threshold}'
-        under_threshold_df = spark_session.sql(under_threshold_sql)
-        under_threshold_df.createOrReplaceTempView('under_threshold')
-
         final_df = (
-            under_threshold_df
+            grouped_by_client_id_df
                 .select('client_id',
                         'pageviews', 'unique_pageviews', 'time_on_page',
                         'u_sessions', 'session_duration',
                         'entrances', 'bounces', 'exits', 'session_count',
                         'is_desktop', 'is_mobile', 'is_tablet')
                 .repartition(32))
+
+        # The schema for final_df is:
+        # |-- client_id: string (nullable = true)
+        # |-- pageviews: double (nullable = true)
+        # |-- unique_pageviews: double (nullable = true)
+        # |-- time_on_page: double (nullable = true)
+        # |-- u_sessions: double (nullable = true)
+        # |-- session_duration: double (nullable = true)
+        # |-- entrances: double (nullable = true)
+        # |-- bounces: double (nullable = true)
+        # |-- exits: double (nullable = true)
+        # |-- session_count: float (nullable = true)
+        # |-- is_desktop: double (nullable = true)
+        # |-- is_mobile: double (nullable = true)
+        # |-- is_tablet: double (nullable = true)
 
         final_df.cache()
 

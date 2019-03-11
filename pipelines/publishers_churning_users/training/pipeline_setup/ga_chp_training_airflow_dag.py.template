@@ -103,6 +103,7 @@ task_7_generate_model_cmd = ' '.join(task_7_generate_model_cmd_parts)
 task_8_mark_model_as_valid_cmd_parts = [
     f'DAY_AS_STR={day_as_str}',
     f'UNIQUE_HASH={unique_hash}',
+    f'MODELS_DIR=/opt/models',
     'bash /opt/ga_chp/training/pipeline_wrapup/ga_chp_mark_model_as_valid.sh ']
 task_8_mark_model_as_valid_cmd = ' '.join(task_8_mark_model_as_valid_cmd_parts)
 

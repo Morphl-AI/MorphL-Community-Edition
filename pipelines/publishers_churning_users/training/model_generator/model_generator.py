@@ -94,7 +94,7 @@ class ModelGenerator:
         # Evaluate the model using the test set.
         score = model.evaluate(sets['test_X'], sets['test_Y'], verbose=0)
 
-        scores = {'score': score[0], 'accuracy': score[1]}
+        scores = {'loss': score[0], 'accuracy': score[1]}
 
         # Save the evaluation scores to a .json file who's name and path are made up of 'day_as_str', 'unique_hash' and 'model_dir' respectively.
         churn_scores_json_file = f'{self.models_dir}/{self.day_as_str}_{self.unique_hash}_ga_chp_churn_scores.json'

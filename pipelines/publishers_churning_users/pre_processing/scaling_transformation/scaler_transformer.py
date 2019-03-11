@@ -84,7 +84,8 @@ class ScalerTransformer:
 
         bc_array = np.array(bc_list).transpose()
 
-        transformed_bc_data = dd.from_array(bc_array, columns=self.num_labels)
+        transformed_bc_data = dd.from_array(
+            bc_array, chunksize=200000, columns=self.num_labels)
 
         # Generate a similar .pkl file name and path for the 'Pipeline' type object with the fitted hyperparameters.
         pkl_file = f'{self.models_dir}/{self.day_as_str}_{self.unique_hash}_ga_chp_pipeline.pkl'
@@ -108,7 +109,7 @@ class ScalerTransformer:
             joblib.dump(pipeline, pkl_file)
             transformed_numeric = pipeline.transform(transformed_bc_data)
 
-        return dd.from_array(transformed_numeric, columns=self.num_labels)
+        return dd.from_array(transformed_numeric, chunksize=200000, columns=self.num_labels)
 
     def get_transformed_gauss_data(self):
         """Applies the natural logarithm of 1 plus the value for the time related columns.
@@ -125,7 +126,7 @@ class ScalerTransformer:
             logged_data[column] = np.log1p(self.dask_df[column])
 
         logged_data_array = np.array(logged_data)
-        return dd.from_array(logged_data_array, columns=self.gauss_labels)
+        return dd.from_array(logged_data_array, chunksize=200000, columns=self.gauss_labels)
 
     def get_churned_data(self):
         """Slices the 'churned' column from the dataframe and returns it.
@@ -134,7 +135,7 @@ class ScalerTransformer:
             A dask dataframe with the 'churned' column.
         """
         churned_data_array = np.array(self.dask_df['churned'])
-        return dd.from_array(churned_data_array, columns=['churned'])
+        return dd.from_array(churned_data_array, chunksize=200000, columns=['churned'])
 
     def get_cat_data(self):
         """Slices the categorical columns from the dask dataframe and returns them.
@@ -143,7 +144,7 @@ class ScalerTransformer:
             A dask dataframe with the categorical columns.
         """
         cat_data_array = np.array(self.dask_df[self.cat_labels])
-        return dd.from_array(cat_data_array, columns=self.cat_labels)
+        return dd.from_array(cat_data_array, chunksize=200000, columns=self.cat_labels)
 
     def get_client_id_data(self):
         """Slices the 'client_id' column from the dask dataframe and returns it.
@@ -152,7 +153,7 @@ class ScalerTransformer:
             A dask dataframe with the 'client_id' column.
         """
         client_id_data_array = np.array(self.dask_df['client_id'])
-        return dd.from_array(client_id_data_array, columns=['client_id'])
+        return dd.from_array(client_id_data_array, chunksize=200000, columns=['client_id'])
 
     def get_transformed_data(self):
         """Calls all the methods to transform the data then concatenates the dataframes.

@@ -110,11 +110,37 @@ CREATE TABLE morphl.ga_chp_predictions (
   PRIMARY KEY ((client_id))
 );
 
+CREATE TABLE morphl.ga_chp_predictions_by_prediction_date (
+  prediction_date date,
+  client_id text, 
+  prediction double,
+  PRIMARY KEY ((prediction_date), client_id)
+);
+
+CREATE TABLE morphl.ga_chp_predictions_statistics (
+  prediction_date date, 
+  loyal counter,
+  neutral counter,
+  churning counter,
+  lost counter,
+  PRIMARY KEY ((prediction_date))
+);
+
+CREATE TABLE morphl.ga_chp_predictions_access_logs (
+  client_id text,
+  tstamp timestamp,
+  prediction double,
+  PRIMARY KEY ((client_id), tstamp)
+) WITH CLUSTERING ORDER BY (tstamp DESC);
+
 CREATE TABLE morphl.ga_chp_valid_models (
   always_zero int,
   day_as_str text,
   tstamp timestamp,
   unique_hash text,
+  threshold double,
+  accuracy double,
+  loss double,
   is_model_valid boolean,
   PRIMARY KEY ((always_zero), day_as_str, tstamp, unique_hash)
 ) WITH CLUSTERING ORDER BY (day_as_str DESC, tstamp DESC);

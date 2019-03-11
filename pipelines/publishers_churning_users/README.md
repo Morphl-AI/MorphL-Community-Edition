@@ -10,6 +10,32 @@ The free version of the Google Analytics Reporting API v4 doesn't export any cli
 
 We should clarify that the **Client ID refers to a browser**, not to a user account, thus it doesn't contain any personal data. It is possible to associate the Client ID with a user account (across devices), however in this particular use case, all client ids refer to browsers.
 
+<a name="orchestrator-setup"></a>
+
+## Using Model on the MorphL Orchestrator
+
+Connecting to **Google Analytics API v4** requires creating a service account and retrieving a view ID from your Google Analytics dashboard. The orchestrator assumes that your Google Analytics dashboard has already been configured to allow exporting of granular data (at the browser & session level). You can read [here](https://github.com/Morphl-Project/MorphL-Collectors/tree/master/google-analytics) about the required setup and **creating a service account**.
+
+Once the [MorphL Orchestrator](https://github.com/Morphl-AI/MorphL-Orchestrator) has been set up, SSH to the VM and from the root prompt, log into `airflow`:
+
+```
+su - airflow
+```
+
+Paste your key file into `/opt/secrets/keyfile.json` and your view ID into `/opt/secrets/viewid.txt`, possibly using syntax like this:
+
+```
+cat > /opt/secrets/keyfile.json << EOF
+{
+...supersecretkeyfilecontents...
+}
+EOF
+
+cat > /opt/secrets/viewid.txt << EOF
+123123456456123123
+EOF
+```
+
 ## Problem Setting
 
 Having access to granular data, **we can predict when a user is going to churn**. We have defined churned users as previously retained users that do not return to the website before a time interval (threshold) has passed. **By retained users**, we mean users that have visited the website at least twice in the past (they have at least 2 sessions).
@@ -58,6 +84,8 @@ This repository contains the code for the churned users pipelines, including mod
 It is responsible for authenticating to the Google Analytics API v4 using a service account and retrieving data. See the **Features and Data Labeling** section for a complete list of Google Analytics dimensions and metrics. The Google Analytics data is saved in Cassandra tables.
 
 The connector runs daily and it can also be used to retrieve historical data (for backfilling).
+
+You can read about integrating the MorphL data science project with Cassandra [here](https://github.com/Morphl-AI/MorphL-Community-Edition/wiki/Integrating-the-MorphL-data-science-project-with-Cassandra).
 
 ### Training Pipeline
 
