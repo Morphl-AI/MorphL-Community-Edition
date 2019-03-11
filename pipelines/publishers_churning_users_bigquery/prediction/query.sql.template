@@ -1,0 +1,31 @@
+SELECT
+  clientId AS client_id,
+  sessions,
+  bounces,
+  no_hits - page_views AS events,
+  session_duration,
+  page_views,
+  IF(device='mobile', 1, 0) AS is_mobile,
+  IF(device='desktop', 1, 0) AS is_desktop,
+  IF(device='tablet', 1, 0) AS is_tablet,
+  session_dates
+FROM(
+  SELECT
+    clientId,
+    SUM(totals.visits) AS sessions,
+    SUM(CASE WHEN totals.bounces IS NOT NULL THEN 1 ELSE 0 END) AS bounces,
+    SUM(CASE WHEN totals.hits IS NOT NULL THEN totals.hits ELSE 0 END) AS no_hits,
+    SUM(CASE WHEN totals.timeOnSite IS NOT NULL THEN totals.timeOnSite ELSE 0 END) AS session_duration,
+    SUM(CASE WHEN totals.pageViews IS NOT NULL THEN totals.pageViews ELSE 0 END) AS page_views,
+    ANY_VALUE(device.deviceCategory) AS device,
+    ARRAY_AGG(DISTINCT date ORDER BY date DESC) AS session_dates
+  FROM `GCP_PROJECT_ID.SRC_BQ_DATASET.ga_sessions_*`
+  WHERE 
+     _TABLE_SUFFIX BETWEEN FORMAT_DATE('%Y%m%d',DATE('DATE_FROM')) AND FORMAT_DATE('%Y%m%d',DATE('DATE_TO'))
+    AND totals.visits = 1
+    AND clientId IS NOT NULL
+    AND ARRAY_LENGTH(ARRAY((SELECT DISTINCT page.hostname FROM UNNEST(hits) hits WHERE page.hostname = 'WEBSITE_URL'))) > 0
+  GROUP BY clientId
+  ORDER BY sessions ASC
+) WHERE sessions > 1
+

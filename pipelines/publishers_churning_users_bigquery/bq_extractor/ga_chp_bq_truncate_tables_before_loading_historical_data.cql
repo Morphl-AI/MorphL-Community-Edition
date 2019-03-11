@@ -1,0 +1,1 @@
+TRUNCATE TABLE morphl.ga_chp_bq_valid_models;

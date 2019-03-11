@@ -1,0 +1,6 @@
+INSERT INTO morphl.ga_chp_bq_config_parameters (morphl_component_name,parameter_name,parameter_value)
+VALUES ('ga_chp_bq','days_training_interval','DAYS_TRAINING_INTERVAL');
+
+INSERT INTO morphl.ga_chp_bq_config_parameters (morphl_component_name,parameter_name,parameter_value)
+VALUES ('ga_chp_bq','days_prediction_interval','DAYS_PREDICTION_INTERVAL');
+

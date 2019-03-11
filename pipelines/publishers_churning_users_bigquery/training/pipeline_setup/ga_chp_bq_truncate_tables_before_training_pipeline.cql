@@ -1,0 +1,2 @@
+TRUNCATE TABLE morphl.ga_chp_bq_features_raw_t;
+TRUNCATE TABLE morphl.ga_chp_bq_features_training;

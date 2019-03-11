@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ga-chp-bq-deployment
+  labels:
+    run: ga-chp-bq
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      run: ga-chp-bq
+  template:
+    metadata:
+      labels:
+        run: ga-chp-bq
+    spec:
+      containers:
+        - name: ga-chp-bq
+          image: pythoncontainer
+          command:
+            [
+              "bash",
+              "/opt/ga_chp_bq/prediction/model_serving/runmodelservingendpoint.sh",
+            ]
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 6868
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: environment-configmap
+          volumeMounts:
+            - name: opt-ga-chp-bq
+              mountPath: /opt/ga_chp_bq
+      volumes:
+        - name: opt-ga-chp-bq
+          hostPath:
+            path: /opt/ga_chp_bq

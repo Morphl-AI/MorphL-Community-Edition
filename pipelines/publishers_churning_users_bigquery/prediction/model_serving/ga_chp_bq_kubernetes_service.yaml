@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ga-chp-bq-service
+  labels:
+    run: ga-chp-bq
+  namespace: default
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 6868
+  selector:
+    run: ga-chp-bq
