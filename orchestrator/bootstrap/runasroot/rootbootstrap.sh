@@ -10,7 +10,7 @@ docker run -d --name registry --restart=always    \
            registry:2
 
 # STABLE_KUBERNETES_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
-STABLE_KUBERNETES_VERSION=1.11.3
+STABLE_KUBERNETES_VERSION=v1.13.4
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 APT_KUBERNETES_VERSION=$(echo ${STABLE_KUBERNETES_VERSION} | sed 's/^v//')-00
